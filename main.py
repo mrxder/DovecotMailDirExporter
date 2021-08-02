@@ -4,33 +4,38 @@ import datetime
 
 def editMail(basePaht : str, filename :str):
 
-    fullPath = os.path.join(basePaht, filename)
+    try:
+        fullPath = os.path.join(basePaht, filename)
 
-    rawDate = ""
-    rawSubject = ""
-    with open(fullPath, 'r') as file_in:
-        for line in file_in:
+        rawDate = ""
+        rawSubject = ""
+        with open(fullPath, 'r') as file_in:
+            for line in file_in:
 
-            if len(line) > 6 and line[0 : 5] == "Date:":
-                rawDate = line
-            
-            if "Subject:" in line:
-                rawSubject = line
-            
-            if len(rawDate) > 1 and len(rawSubject) > 1:
+                if len(line) > 6 and line[0 : 5] == "Date:":
+                    rawDate = line
+                
+                if "Subject:" in line:
+                    rawSubject = line
+                
+                if len(rawDate) > 1 and len(rawSubject) > 1:
+                    break
+
+        rawDate = rawDate[6:-1]
+        partsDate = rawDate.split(',')
+        rawDate = partsDate[1]
+        partsDate = rawDate.split(' ')
+        rawDate = ""
+        for pdel in partsDate:
+            if len(pdel) > 0 and (pdel[0] == "+" or pdel[0] == '-'):
                 break
-
-    rawDate = rawDate[6:-1]
-    partsDate = rawDate.split(',')
-    rawDate = partsDate[1]
-    partsDate = rawDate.split(' ')
-    rawDate = ""
-    for pdel in partsDate:
-        if len(pdel) > 0 and (pdel[0] == "+" or pdel[0] == '-'):
-            break
-        if len(pdel) > 0:
-            rawDate += pdel + "_"
-    os.rename(fullPath, os.path.join(basePaht, rawDate + ".eml"))
+            if len(pdel) > 0:
+                rawDate += pdel + "_"
+        os.rename(fullPath, os.path.join(basePaht, rawDate + ".eml"))
+    except UnicodeDecodeError:
+        print("UnicodeError skip")
+    except IndexError:
+        print("Date in wrong format")
 
 def travers(dir : str):
     elems = os.listdir(dir)
