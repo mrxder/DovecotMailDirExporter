@@ -37,6 +37,7 @@ def editMail(basePaht : str, filename :str):
     except IndexError:
         print("Date in wrong format")
 
+
 def travers(dir : str):
     elems = os.listdir(dir)
     for elem in elems:
